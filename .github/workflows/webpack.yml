@@ -6,6 +6,18 @@ on:
   pull_request:
     branches: [ "main" ]
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,20 +34,22 @@ jobs:
         npm install
         npx webpack
 
-    - name: GitHub Pages
-      uses: crazy-max/ghaction-github-pages@v4
-      with:
-        # Git branch where site will be deployed
-        target_branch: gh-pages
-        # Create incremental commit instead of doing push force
-        keep_history: true
-        # Build directory to deploy
-        build_dir: dist
-        # Write the given domain name to the CNAME file
-        #fqdn: custom.domain.name # optional
-        # Prevent Jekyll from building the site
-        jekyll: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_NAME: yuanmingyi
-        GITHUB_EMAIL: millan.yuan@gmail.com
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: 'dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
