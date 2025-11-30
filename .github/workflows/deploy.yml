@@ -25,6 +25,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+      GITHUB_EMAIL: millan.yuan@gmail.com
+      GITHUB_NAME: yuanmingyi
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,16 +35,15 @@ jobs:
         run: |
           npm install
           npx webpack
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
       - name: List
         run:
           ls -lat
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: './dist'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Push new build
+        run: |
+          git config --local user.email "${{ env.GITHUB_EMAIL }}"
+          git config --local user.name "${{ env.GITHUB_NAME }}"
+          cd dist
+          git init .
+          git branch -m 'gh-pages'
+          git commit -m 'update new build' || echo "nothing to commit"
+          git push origin gh-pages || echo "nothing to push"
