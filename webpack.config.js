@@ -9,6 +9,32 @@ const commonConfig = (env, argv) => {
   // Determine the mode based on the environment or command line
   const mode = argv.mode || 'development';
   
+  const plugins = [
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      filename: 'index.html',
+      minify: mode === 'production' ? {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      } : false,
+    }),
+  ];
+  
+  // Only add Dotenv plugin for production builds to avoid potential conflicts in development
+  if (mode === 'production') {
+    plugins.push(new Dotenv({
+      systemvars: true,
+    }));
+  }
+  
   return {
     entry: './public/game.js',
     output: {
@@ -19,30 +45,7 @@ const commonConfig = (env, argv) => {
     resolve: {
       extensions: ['.js', '.json'],
     },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: './public/index.html',
-        filename: 'index.html',
-        minify: mode === 'production' ? {
-          removeComments: true,
-          collapseWhitespace: true,
-          removeRedundantAttributes: true,
-          useShortDoctype: true,
-          removeEmptyAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-          keepClosingSlash: true,
-          minifyJS: true,
-          minifyCSS: true,
-          minifyURLs: true,
-        } : false,
-      }),
-      new DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(mode),
-      }),
-      new Dotenv({
-        systemvars: true,
-      }),
-    ],
+    plugins: plugins,
     module: {
       rules: [
         {
