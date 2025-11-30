@@ -26,3 +26,19 @@ jobs:
       run: |
         npm install
         npx webpack
+
+    - name: GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v2.2.0
+      with:
+        # Git branch where site will be deployed
+        target_branch: gh-pages
+        # Create incremental commit instead of doing push force
+        keep_history: true
+        # Build directory to deploy
+        build_dir: dist
+        # Write the given domain name to the CNAME file
+        #fqdn: custom.domain.name # optional
+        # Prevent Jekyll from building the site
+        jekyll: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
