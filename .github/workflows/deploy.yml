@@ -1,10 +1,10 @@
-name: NodeJS with Webpack
+name: Deploy
 
 # Controls when the action will run. 
 on:
   # trigger when the Run Data Sync workflow succeeded
   workflow_run:
-    workflows: ["webpack"]
+    workflows: ["Webpack"]
     types:
       - completed
 
