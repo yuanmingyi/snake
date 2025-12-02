@@ -38,10 +38,12 @@ jobs:
           ls -lat
       - name: Push new build
         run: |
-          git config --local user.email "millan.yuan@gmail.com"
-          git config --local user.name "yuanmingyi"
           cd dist
           git init .
-          git branch -m 'gh-pages'
+          git remote set origin https://github.com/yuanmingyi/snake.git
+          git config --local user.email "millan.yuan@gmail.com"
+          git config --local user.name "yuanmingyi"
+          git checkout -b gh-pages
+          git add .
           git commit -m 'update new build' || echo "nothing to commit"
-          git push origin gh-pages || echo "nothing to push"
+          git push -f origin gh-pages || echo "nothing to push"
