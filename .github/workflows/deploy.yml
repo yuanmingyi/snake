@@ -40,10 +40,9 @@ jobs:
         run: |
           cd dist
           git init .
-          git remote set origin https://github.com/yuanmingyi/snake.git
+          git remote add origin https://github.com/yuanmingyi/snake.git
           git config --local user.email "millan.yuan@gmail.com"
           git config --local user.name "yuanmingyi"
-          git checkout -b gh-pages
           git add .
           git commit -m 'update new build' || echo "nothing to commit"
-          git push -f origin gh-pages || echo "nothing to push"
+          git push -f origin HEAD:gh-pages || echo "nothing to push"
